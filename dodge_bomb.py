@@ -106,6 +106,10 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     
     return kk_dict[sum_mv]
 
+def calc_orientation(org: pg.Rect, dst: pg.Rect,current_xy: tuple[float, float]) -> tuple[float, float]:
+    pass
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
