@@ -80,7 +80,31 @@ def init_bb_imgs() ->  tuple[list[pg.Surface], list[int]]:
         bb_img.set_colorkey((0, 0, 0))
         bb_imgs.append(bb_img)
     return bb_imgs,bb_accs
+
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    """
+    飛ぶ方向に応じてこうかとんの画像を切り替える
+    引数：移動量タプル
+
+    """
+    
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0,0.9)
+    kk_img2 = pg.transform.rotozoom(pg.image.load("fig/3.png"), -45,0.9)
+    kk_img3 = pg.transform.rotozoom(pg.image.load("fig/3.png"), 45,0.9)
+    kk_img4 = pg.transform.rotozoom(pg.image.load("fig/3.png"), 90,0.9)
         
+    kk_dict={(0,0):kk_img,
+             (-5,0):kk_img,
+             (-5,-5):kk_img2,
+             (0,-5):pg.transform.flip(kk_img4,False,True),
+             (+5,-5):pg.transform.flip(kk_img2,True,False),
+             (+5,0):pg.transform.flip(kk_img,True,False),
+             (+5,+5):pg.transform.flip(kk_img3,True,False),
+             (0,+5):pg.transform.flip(kk_img,False,True),
+             (-5,+5):pg.transform.flip(kk_img3,False,False),
+    }
+    
+    return kk_dict[sum_mv]
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -122,6 +146,10 @@ def main():
                 sum_mv[0] += tpl[0]##########
                 sum_mv[1] += tpl[1]##########            
         kk_rct.move_ip(sum_mv)
+        
+        kk_img = get_kk_img((0, 0)) 
+        kk_img = get_kk_img(tuple(sum_mv))
+        
         #こうかとんが画面外なら元の場所に戻す↓
         if check_bound(kk_rct) != (True,True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
@@ -132,6 +160,8 @@ def main():
             vx *= -1
         if not tate:  # 縦にはみ出てる
             vy *= -1
+        
+        
         screen.blit(bb_img, bb_rct)######
         pg.display.update()
         tmr += 1
