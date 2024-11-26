@@ -61,17 +61,17 @@ def gameover(screen: pg.Surface) -> None:
     time.sleep(5)
     return
 
-def kakudai() -> tuple[list[int], list[pg.Surface]]:
+def init_bb_imgs() ->  tuple[list[pg.Surface], list[int]]:
     """
     拡大・加速する爆弾の生成
     引数：なし
     戻り値：accs(加速倍率のintリスト),bb_imgs(爆弾表示のためのpg.Surfaceリスト)
 
     """
-    accs=[]
+    
     bb_imgs=[]
     
-    accs = [a for a in range(1,11)]# 加速度のリスト
+    bb_accs = [a for a in range(1,11)]# 加速度のリスト
     
     for r in range(1, 11):# 拡大のリスト
         # bb_accs.append(r)  # 加速度
@@ -79,7 +79,7 @@ def kakudai() -> tuple[list[int], list[pg.Surface]]:
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
         bb_img.set_colorkey((0, 0, 0))
         bb_imgs.append(bb_img)
-    return accs, bb_imgs
+    return bb_imgs,bb_accs
         
 
 def main():
@@ -108,9 +108,9 @@ def main():
             # return
         
         #拡大加速の処理↓  
-        accs, bb_imgs = kakudai()
-        avx = vx*accs[min(tmr//100, 9)]  
-        avy = vy*accs[min(tmr//100, 9)]
+        bb_imgs, bb_accs = init_bb_imgs()
+        avx = vx*bb_accs[min(tmr//100, 9)]  
+        avy = vy*bb_accs[min(tmr//100, 9)]
         bb_img = bb_imgs[min(tmr//100, 9)]
             
         screen.blit(bg_img, [0, 0]) 
