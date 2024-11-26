@@ -37,7 +37,7 @@ def gameover(screen: pg.Surface) -> None:
     戻り値：なし
 
     """
-    sikaku = pg.Surface((1100,650))
+    sikaku = pg.Surface((WIDTH,HEIGHT))
     pg.draw.rect(sikaku, 0,pg.Rect(0,0,1100,650))
     sikaku.set_alpha(200)
     screen.blit(sikaku,[0,0])
