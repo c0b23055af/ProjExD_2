@@ -12,6 +12,9 @@ DELTA = {
     pg.K_LEFT:(-5,0),
     pg.K_RIGHT:(+5,0),
 }
+
+accs = [a for a in range(1,11)]##########
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
@@ -57,7 +60,27 @@ def gameover(screen: pg.Surface) -> None:
     pg.display.update()
     time.sleep(5)
     return
+
+def kakudai() -> tuple[list[int], list[pg.Surface]]:
+    """
+    拡大・加速する爆弾の生成
+    引数：なし
+    戻り値：accs(加速倍率のintリスト),bb_imgs(爆弾表示のためのpg.Surfaceリスト)
+
+    """
+    accs=[]
+    bb_imgs=[]
     
+    accs = [a for a in range(1,11)]# 加速度のリスト
+    
+    for r in range(1, 11):# 拡大のリスト
+        # bb_accs.append(r)  # 加速度
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
+    return accs, bb_imgs
+        
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -72,6 +95,7 @@ def main():
     bb_rct = bb_img.get_rect()#爆弾rectの抽出
     bb_rct.center = random.randint(0,WIDTH),random.randint(0,HEIGHT)#
     vx,vy =+5,+5 #爆弾速度
+    
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -82,6 +106,12 @@ def main():
         if kk_rct.colliderect(bb_rct):
             gameover(screen)
             # return
+        
+        #拡大加速の処理↓  
+        accs, bb_imgs = kakudai()
+        avx = vx*accs[min(tmr//100, 9)]  
+        avy = vy*accs[min(tmr//100, 9)]
+        bb_img = bb_imgs[min(tmr//100, 9)]
             
         screen.blit(bg_img, [0, 0]) 
 
@@ -96,7 +126,7 @@ def main():
         if check_bound(kk_rct) != (True,True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx,vy)###########
+        bb_rct.move_ip(avx,avy)###avx,avyに変更######
         yoko, tate = check_bound(bb_rct)
         if not yoko:  # 横にはみ出てる
             vx *= -1
